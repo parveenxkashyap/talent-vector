@@ -60,3 +60,16 @@ if "authenticated" not in st.session_state:
     st.session_state["user_name"] = None
     st.session_state["profile_tab"] = "profile"
     st.session_state["current_page"] = "login"  # Default page: login, register, dashboard, profile
+
+# --- Security Functions ---
+def hash_password(password, salt=None):
+    """Hash a password for storing."""
+    if salt is None:
+        salt = uuid.uuid4().hex
+    hashed = hashlib.sha256(salt.encode() + password.encode()).hexdigest()
+    return f"{salt}${hashed}"
+
+def verify_password(stored_password, provided_password):
+    """Verify a stored password against one provided by user"""
+    salt, hashed = stored_password.split('$')
+    return hashed == hashlib.sha256(salt.encode() + provided_password.encode()).hexdigest()
