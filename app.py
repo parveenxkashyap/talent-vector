@@ -169,3 +169,31 @@ def change_password(email, current_password, new_password):
     conn.commit()
     conn.close()
     return True, "Password changed successfully"
+
+# --- Resume History Functions ---
+def save_ranking_history(email, job_title, description, results):
+    """Save resume ranking history for the user."""
+    conn = sqlite3.connect('Resume.db')
+    c = conn.cursor()
+    # Create new history entry
+    c.execute(
+        "INSERT INTO ranking_history (email, timestamp, job_title, description, results) VALUES (?, ?, ?, ?, ?)",
+        (
+            email,
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            job_title,
+            description,
+            results.to_json()
+        )
+    )
+    conn.commit()
+    conn.close()
+
+def get_user_history(email):
+    """Get resume ranking history for the user."""
+    conn = sqlite3.connect('Resume.db')
+    # Get all history records for the user
+    query = "SELECT id, timestamp, job_title, description, results FROM ranking_history WHERE email = ? ORDER BY timestamp DESC"
+    history_df = pd.read_sql_query(query, conn, params=(email,))
+    conn.close()
+    return history_df
