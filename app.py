@@ -59,7 +59,7 @@ if "authenticated" not in st.session_state:
     st.session_state["user_email"] = None
     st.session_state["user_name"] = None
     st.session_state["profile_tab"] = "profile"
-    st.session_state["current_page"] = "login"  # Default page: login, register, dashboard, profile
+    st.session_state["current_page"] = "login"
 
 # --- Security Functions ---
 def hash_password(password, salt=None):
@@ -79,14 +79,11 @@ def save_user(email, password, name=""):
     """Registers a new user in the database."""
     conn = sqlite3.connect('Resume.db')
     c = conn.cursor()
-    # Check if user exists
     c.execute("SELECT email FROM users WHERE email = ?", (email,))
     if c.fetchone():
         conn.close()
-        return False  # User already exists
-    # Hash the password
+        return False
     hashed_password = hash_password(password)
-    # Create new user with timestamp
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     c.execute(
         "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -107,7 +104,6 @@ def authenticate_user(email, password):
         return False
     stored_password = result[0]
     if verify_password(stored_password, password):
-        # Update last login time
         current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         c.execute("UPDATE users SET last_login = ? WHERE email = ?", (current_date, email))
         conn.commit()
@@ -162,9 +158,7 @@ def change_password(email, current_password, new_password):
     if not verify_password(stored_password, current_password):
         conn.close()
         return False, "Current password is incorrect"
-    # Hash the new password
     hashed_password = hash_password(new_password)
-    # Update password
     c.execute("UPDATE users SET password = ? WHERE email = ?", (hashed_password, email))
     conn.commit()
     conn.close()
@@ -175,7 +169,6 @@ def save_ranking_history(email, job_title, description, results):
     """Save resume ranking history for the user."""
     conn = sqlite3.connect('Resume.db')
     c = conn.cursor()
-    # Create new history entry
     c.execute(
         "INSERT INTO ranking_history (email, timestamp, job_title, description, results) VALUES (?, ?, ?, ?, ?)",
         (
@@ -192,8 +185,31 @@ def save_ranking_history(email, job_title, description, results):
 def get_user_history(email):
     """Get resume ranking history for the user."""
     conn = sqlite3.connect('Resume.db')
-    # Get all history records for the user
     query = "SELECT id, timestamp, job_title, description, results FROM ranking_history WHERE email = ? ORDER BY timestamp DESC"
     history_df = pd.read_sql_query(query, conn, params=(email,))
     conn.close()
     return history_df
+
+# --- Resume Processing Functions ---
+def extract_text_from_pdf(file):
+    """Extracts text from an uploaded PDF file."""
+    try:
+        pdf = PdfReader(file)
+        text = ""
+        for page in pdf.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
+        return text.strip() if text else "No readable text found."
+    except Exception as e:
+        return f"Error extracting text: {str(e)}"
+
+def rank_resumes(job_description, resumes):
+    """Ranks resumes based on their similarity to the job description."""
+    documents = [job_description] + resumes
+    vectorizer = TfidfVectorizer().fit_transform(documents)
+    vectors = vectorizer.toarray()
+    job_description_vector = vectors[0]
+    resume_vectors = vectors[1:]
+    cosine_similarities = cosine_similarity([job_description_vector], resume_vectors).flatten()
+    return cosine_similarities
