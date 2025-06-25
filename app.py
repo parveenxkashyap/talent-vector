@@ -213,3 +213,41 @@ def rank_resumes(job_description, resumes):
     resume_vectors = vectors[1:]
     cosine_similarities = cosine_similarity([job_description_vector], resume_vectors).flatten()
     return cosine_similarities
+
+# Add custom CSS for better styling
+st.markdown("""
+<style>
+    .main .block-container {
+        padding-top: 2rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- Main Navigation ---
+def show_login_page():
+    st.sidebar.title("📝 User Login")
+    st.sidebar.markdown("### Please enter your credentials to login.")
+    login_email = st.sidebar.text_input("📧 Email", key="login_email", placeholder="Enter your email")
+    login_password = st.sidebar.text_input("🔑 Password", type="password", key="login_password", placeholder="Enter your password")
+    st.sidebar.markdown("---")
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        if st.button("🔐 Login", use_container_width=True):
+            if authenticate_user(login_email, login_password):
+                st.session_state["authenticated"] = True
+                st.session_state["user_email"] = login_email
+                profile = get_user_profile(login_email)
+                st.session_state["user_name"] = profile["name"]
+                st.session_state["current_page"] = "dashboard"
+                st.rerun()
+            else:
+                st.sidebar.error("❌ Invalid email or password")
+    with col2:
+        if st.button("📝 Register", use_container_width=True):
+            st.session_state["current_page"] = "register"
+            st.rerun()
+
+def show_register_page():
+    st.sidebar.title("📝 User Registration")
+    st.sidebar.markdown("### Create a new account to get started.")
+    reg_email = st.sidebar.text_input("📧 Email*", key="reg_email",
