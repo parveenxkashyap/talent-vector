@@ -1,5 +1,3 @@
-README.md
-```md
 # 📄 TalentVector - AI Resume Ranking Platform
 
 Streamlit app that ranks resumes against job descriptions using TF-IDF cosine similarity. Features user authentication, SQLite database, profile management, and ranking history.
@@ -16,7 +14,7 @@ Streamlit app that ranks resumes against job descriptions using TF-IDF cosine si
 
 1. **Clone & Install**
 ```bash
-git clone <repo-link->
+git clone <https://github.com/parveenxkashyap/talent-vector>
 cd talentvector
 pip install -r requirements.txt
 ```
