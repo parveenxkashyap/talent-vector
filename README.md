@@ -2,6 +2,9 @@
 
 Streamlit app that ranks resumes against job descriptions using TF-IDF cosine similarity. Features user authentication, SQLite database, profile management, and ranking history.
 
+## 🌐 Live Demo
+👉 https://talent-vector.streamlit.app/
+
 ## ✨ Features
 - 🔐 Secure user registration/login with password hashing
 - 📄 PDF resume text extraction (pypdf)
