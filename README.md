@@ -14,8 +14,8 @@ Streamlit app that ranks resumes against job descriptions using TF-IDF cosine si
 
 1. **Clone & Install**
 ```bash
-git clone <https://github.com/parveenxkashyap/talent-vector>
-cd talentvector
+git clone https://github.com/parveenxkashyap/talent-vector.git
+cd talent-vector
 pip install -r requirements.txt
 ```
 
@@ -53,11 +53,12 @@ streamlit run app.py
 
 ## 📊 Example Output
 ```
-Resume              | Score
--------------------|-------
-john_doe_cv.pdf    | 0.847
-jane_smith.pdf     | 0.723
-resume_batch_1.pdf | 0.612
+Rank | Resume Name	| Match Score |Raw Score
+-----|--------------|-------------|---------
+1	 |Jillani.pdf	|54.10%	      |0.5408
+2	 |dinesh.pdf	|31.90%	      |0.3189
+3	 |john.pdf	    |18.30%	      |0.183
+
 ```
 
 ## ⚙️ Configuration
@@ -88,4 +89,3 @@ MIT License - feel free to use/modify/deploy anywhere.
 
 ## 🙏 Acknowledgments
 Built with ❤️ using Streamlit, scikit-learn, and SQLite.
-```
