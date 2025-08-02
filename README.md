@@ -53,11 +53,11 @@ streamlit run app.py
 
 ## 📊 Example Output
 ```
-Rank | Resume Name	| Match Score |Raw Score
------|--------------|-------------|---------
-1	 |Jillani.pdf	|54.10%	      |0.5408
-2	 |dinesh.pdf	|31.90%	      |0.3189
-3	 |john.pdf	    |18.30%	      |0.183
+| Rank | Resume Name | Match Score | Raw Score |
+|------|-------------|-------------|-----------|
+| 1    | Jillani.pdf | 54.10%      | 0.5408    |
+| 2    | dinesh.pdf  | 31.90%      | 0.3189    |
+| 3    | john.pdf    | 18.30%      | 0.183     |
 
 ```
 
